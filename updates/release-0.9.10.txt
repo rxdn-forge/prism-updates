@@ -1,0 +1,11 @@
+Prism Explorer 0.9.10 (25), 26 November 2026
+
+Fixed native column-cell image lifetime and editor Undo crashes.
+Widened the split divider pointer target.
+New Folder uses the focused or context-menu pane.
+New Tab supports Tab and Shift-Tab option traversal.
+Mothline is the new-profile identity. Foldfield and Amberpane are also included.
+
+macOS 14+, Apple Silicon. Preview build, not yet notarized.
+Updates and archives carry the existing publisher signature.
+Restart through Prism when active terminal work is ready.

@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
-<rss xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" version="2.0"><channel><title>Prism Explorer updates</title><item><title>Prism 0.9.9</title><sparkle:version>24</sparkle:version><sparkle:shortVersionString>0.9.9</sparkle:shortVersionString><sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion><description>Prism Explorer for macOS.</description><enclosure url="https://prism.rxdn.dev/updates/Prism-Explorer-0.9.9-24.zip" length="14909581" type="application/octet-stream" sparkle:edSignature="PnbQUukI0j40d+7QLgEkb5jSAsQlWTH3mzlrRtbrGmU0aoxrcZPSATITcMLDODcClgyN4XHDrY8+vAj2+0XABA==" /></item></channel></rss>
+<rss xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" version="2.0"><channel><title>Prism Explorer updates</title><item><title>Prism 0.9.10</title><sparkle:version>25</sparkle:version><sparkle:shortVersionString>0.9.10</sparkle:shortVersionString><sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion><description>Prism Explorer for macOS.</description><enclosure url="https://prism.rxdn.dev/updates/Prism-Explorer-0.9.10-25.zip" length="20513097" type="application/octet-stream" sparkle:edSignature="4YvLGgkkMPufeuKseWjXm2S0LyS3kinpQQPgOPLNAggseW+1rFQrZvqKPRfvC+3dh2oBMh3AtT2w5BUVvnofAA==" /></item></channel></rss>
 <!-- sparkle-signatures:
-edSignature: SEExeRnV5iYnnua2Ah99nE/7N0WrJQnIq4r2AscnzueQbjoX6o8l0N/v3bV8dzFzsetPwr7rG+oc9Ekog+jZBA==
-length: 683
+edSignature: R8V6QD252XAVTEb1Pl9zmcWsCpmnhoDwG6lI+mIRWEhd49ngrrHQWyApQ9TJh9ttZTPnEjtRMLssaUamUMDAAg==
+length: 686
 -->
