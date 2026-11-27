@@ -196,7 +196,7 @@ class Verification:
 
     def ui_acceptance(self, process):
         capabilities = self.state["capabilities"]
-        required = ("axTrusted", "windowServerAvailable", "consoleSession", "screenCapturePermitted")
+        required = ("axTrusted", "windowServerAvailable", "screenCapturePermitted")
         if not all(capabilities[key] for key in required):
             self.state["phase"] = "blocked-ui-capability"
             self.state["uiGap"] = "Hosted runner lacks a required preauthorized UI capability. Package, public signatures and normal launch were still checked. No security permissions were changed."

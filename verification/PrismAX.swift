@@ -40,7 +40,7 @@ if mode == "capabilities" {
         "axTrusted": AXIsProcessTrusted(),
         "windowServerAvailable": CGWindowListCopyWindowInfo(.optionAll, kCGNullWindowID) != nil,
         "screenCapturePermitted": CGPreflightScreenCaptureAccess(),
-        "consoleSession": session["kCGSessionOnConsoleKey"] as? Bool ?? false,
+        "consoleSession": session[kCGSessionOnConsoleKey as String] as? Bool ?? false,
         "existingPrismPIDs": NSRunningApplication.runningApplications(withBundleIdentifier: "dev.prism.explorer").map(\.processIdentifier)
     ])
 } else if mode == "apps" {
