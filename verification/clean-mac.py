@@ -95,8 +95,9 @@ class Verification:
             raise RuntimeError("Public bytes differ from reviewed immutable digest")
         destination.write_bytes(data)
 
-    def capture(self, pid, name):
-        window_title = "Software Update" if name in ("offer", "ready") else "Clean Mac Upgrade Fixture"
+    def capture(self, pid, name, window_title=None):
+        if window_title is None:
+            window_title = "Software Update" if name == "offer" else "Clean Mac Upgrade Fixture"
         result = wait_for(
             lambda: self.adapter("capture", pid, self.output / name, window_title),
             lambda value: value.get("success"),
@@ -243,14 +244,20 @@ class Verification:
                 new_pid = changed[0]["pid"]
                 break
             windows = self.adapter("inspect", pid)
-            can_relaunch = any(
-                button["title"] == "Install and Relaunch" and button["enabled"]
-                for window in windows for button in window["buttons"]
-            )
-            if not relaunch_pressed and can_relaunch:
-                self.capture(pid, "ready")
-                relaunch_pressed = self.adapter("button", pid, "Install and Relaunch").get("success", False)
             self.state["lastWindows"] = windows
+            ready_window = next((
+                window for window in windows
+                if any(
+                    button["title"] == "Install and Relaunch" and button["enabled"]
+                    for button in window["buttons"]
+                )
+            ), None)
+            if not relaunch_pressed and ready_window:
+                self.save()
+                self.capture(pid, "ready", ready_window["title"])
+                relaunch_pressed = self.adapter("button", pid, "Install and Relaunch").get("success", False)
+                self.state["relaunchApprovalPressed"] = relaunch_pressed
+                self.save()
             time.sleep(0.75)
         else:
             raise RuntimeError("No same-path build28 relaunch in180seconds; no unknown prompt was accepted")

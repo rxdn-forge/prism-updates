@@ -72,7 +72,7 @@ if mode == "capabilities" {
                 ["title": label($0), "enabled": attribute($0, kAXEnabledAttribute) as? Bool ?? false]
             }
             let fixtureVisible = walk(window).contains {
-                label($0).contains("Upgrade-proof.txt") || label($0).contains("Clean Mac Upgrade Fixture")
+                label($0).contains("Upgrade-proof.txt")
             }
             let offerVisible = walk(window).contains { label($0).contains("0.9.13") }
             return [
