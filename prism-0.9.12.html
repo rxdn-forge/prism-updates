@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Prism Explorer for Mac</title>
+    <meta
+      name="description"
+      content="Compare folders, edit a file and open a terminal in the same native Mac workspace."
+    />
+    <meta property="og:title" content="Prism Explorer for Mac" />
+    <meta property="og:description" content="Files, terminal and editor share a workspace." />
+    <meta property="og:image" content="https://prism.rxdn.dev/media/prism-card.jpg" />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" content="#23202c" />
+    <link rel="canonical" href="https://prism.rxdn.dev/" />
+    <link rel="icon" href="media/mothline.webp" />
+    <link rel="stylesheet" href="site.css" />
+    <link rel="preload" href="fonts/bricolage-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <script src="tour.js" defer></script>
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <header class="mast">
+      <div class="shell">
+        <a class="brand" href="./"
+          ><img src="media/mothline.webp" width="40" height="40" alt="" />Prism Explorer</a
+        >
+        <nav aria-label="Main">
+          <a href="#tour">Tour</a><a href="#download">Get Prism</a><a href="#press">Press</a>
+        </nav>
+      </div>
+    </header>
+    <main id="main">
+      <section class="hero">
+        <div class="shell hero-grid">
+          <div class="hero-copy">
+            <h1>Keep the folder<br />in view.</h1>
+            <p>
+              A native Mac file browser for people who work between folders, an editor and a terminal. Give each
+              its own tab, then put the two you need side by side.
+            </p>
+            <div class="actions">
+              <a class="primary" href="#download">Get Prism for Mac <span aria-hidden="true">↓</span></a
+              ><a class="quiet" href="#tour">Explore the workspace</a>
+            </div>
+          </div>
+          <figure class="hero-art">
+            <img
+              src="media/mothline.webp"
+              width="416"
+              height="416"
+              alt="Mothline, a folded violet moth with a point of light at its center"
+            />
+          </figure>
+        </div>
+      </section>
+      <section class="workspace shell" id="tour" aria-labelledby="tour-title">
+        <div class="tour-head">
+          <h2 id="tour-title">Inside the workspace</h2>
+          <div class="tabs" aria-label="Choose a workspace view">
+            <a href="media/browse.jpg" data-scene="browse" aria-current="true">Files</a
+            ><a href="media/terminal.jpg" data-scene="terminal">Terminal</a>
+            <a href="media/editor.jpg" data-scene="editor">Editor</a
+            ><a href="media/space.jpg" data-scene="space">Space</a>
+          </div>
+        </div>
+        <figure class="workspace-shot">
+          <div class="detail-note"><span id="detail-title">Files, closer</span><span>Native Mac detail · tap for full view</span></div>
+          <a id="shot-link" href="media/browse.jpg" aria-label="Open full-size Files screenshot"
+            ><picture>
+              <source id="shot-detail" media="(max-width: 600px)" srcset="media/browse-detail.jpg" width="542" height="816" />
+              <img
+              id="shot"
+              src="media/browse.jpg"
+              width="1600"
+              height="925"
+              alt="Two native Prism panes show the Dovetail project and its Editions folder."
+          /></picture></a>
+          <figcaption aria-live="polite">
+            <span id="caption"
+              >Compare the project and its print editions in two independently navigable panes.</span
+            ><a id="full" href="media/browse.jpg">Full size <span aria-hidden="true">↗</span></a>
+          </figcaption>
+        </figure>
+      </section>
+      <section class="story shell" aria-labelledby="film-title">
+        <div>
+          <h2 id="film-title">From folder<br />to finishing touch.</h2>
+          <p>
+            Open a project, check the terminal, edit its source, and see what takes up space. This short tour
+            visits all four views in the same sample print studio.
+          </p>
+        </div>
+        <video
+          controls
+          playsinline
+          preload="none"
+          aria-label="Prism Explorer workspace tour"
+          poster="media/film-poster.jpg"
+          width="1280"
+          height="720"
+        >
+          <source src="media/prism-tour.mp4" type="video/mp4" />
+          <track kind="captions" src="media/tour.vtt" srclang="en" label="English" default />
+        </video>
+      </section>
+      <section class="identity">
+        <div class="shell identity-row">
+          <div>
+            <h2>Pick your Prism.</h2>
+            <p>
+              Mothline greets new profiles. Choose a different Dock icon in Settings, under Colors, Fonts and
+              Icons.
+            </p>
+          </div>
+          <div class="marks">
+            <figure>
+              <img src="media/mothline.webp" alt="" width="96" height="96" loading="lazy" />
+              <figcaption>Mothline</figcaption>
+            </figure>
+            <figure>
+              <img src="media/foldfield.webp" alt="" width="96" height="96" loading="lazy" />
+              <figcaption>Foldfield</figcaption>
+            </figure>
+            <figure>
+              <img src="media/amberpane.webp" alt="" width="96" height="96" loading="lazy" />
+              <figcaption>Amberpane</figcaption>
+            </figure>
+          </div>
+        </div>
+      </section>
+      <section class="download shell" id="download">
+        <div>
+          <h2>Get Prism for Mac</h2>
+          <p>Preview 0.9.12, build 27. For Apple silicon running macOS 14 or later.</p>
+          <p class="note">
+            The preview carries Prism’s update signature. Apple Developer ID signing and notarization are pending.
+            macOS may block a first launch.
+          </p>
+        </div>
+        <div class="cta-stack">
+          <a class="primary" href="updates/Prism-Explorer-0.9.12-27.zip" download
+            >Download the preview <span aria-hidden="true">↓</span></a
+          >
+          <a href="updates/release-0.9.12.html">What’s new in 0.9.12</a>
+        </div>
+        <p class="already">
+          Already using Prism? Open <strong>Prism Explorer › Check for Updates…</strong> to see what changed and
+          update in place.
+        </p>
+      </section>
+    </main>
+    <footer id="press">
+      <div class="shell">
+        <div>
+          <strong>Press and support</strong>
+          <p>App icons, screenshots, the silent tour and product descriptions.</p>
+        </div>
+        <div class="footer-links">
+          <a href="media/Prism-press-kit.zip" download>Download the press kit</a
+          ><a href="https://github.com/rxdn-forge/prism-updates/issues">Report an issue</a
+          ><a href="data.html">Data and permissions</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
