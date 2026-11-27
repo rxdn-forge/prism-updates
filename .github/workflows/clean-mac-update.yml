@@ -14,7 +14,7 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           persist-credentials: false
-      - name: Original build 27 menu to signed public build 28
+      - name: Original build 28 menu to signed public build 29
         run: python3 verification/clean-mac.py
       - name: Keep bounded public fixture evidence
         if: always()

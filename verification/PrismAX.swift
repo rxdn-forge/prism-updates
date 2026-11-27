@@ -14,11 +14,16 @@ func children(_ element: AXUIElement) -> [AXUIElement] {
     attribute(element, kAXChildrenAttribute) as? [AXUIElement] ?? []
 }
 
+func firstNonempty(_ values: [String?]) -> String {
+    values.compactMap { $0 }.first { !$0.isEmpty } ?? ""
+}
+
 func label(_ element: AXUIElement) -> String {
-    (attribute(element, kAXTitleAttribute) as? String)
-        ?? (attribute(element, kAXDescriptionAttribute) as? String)
-        ?? (attribute(element, kAXValueAttribute) as? String)
-        ?? ""
+    firstNonempty([
+        attribute(element, kAXTitleAttribute) as? String,
+        attribute(element, kAXValueAttribute) as? String,
+        attribute(element, kAXDescriptionAttribute) as? String
+    ])
 }
 
 func walk(_ element: AXUIElement, depth: Int = 0) -> [AXUIElement] {
@@ -34,7 +39,11 @@ func emit(_ value: Any) {
 let arguments = CommandLine.arguments
 let mode = arguments[1]
 
-if mode == "capabilities" {
+if mode == "self-test" {
+    assert(firstNonempty(["", "Upgrade-proof.txt", "generic description"]) == "Upgrade-proof.txt")
+    assert(firstNonempty([nil, "", nil]) == "")
+    emit(["success": true])
+} else if mode == "capabilities" {
     let session = CGSessionCopyCurrentDictionary() as? [String: Any] ?? [:]
     emit([
         "axTrusted": AXIsProcessTrusted(),
@@ -53,6 +62,15 @@ if mode == "capabilities" {
     defaults.set(data, forKey: "prism.featureConfiguration.v2")
     defaults.synchronize()
     emit(["readbackMatches": defaults.data(forKey: "prism.featureConfiguration.v2") == data])
+} else if mode == "preference-proof" {
+    let defaults = UserDefaults(suiteName: "dev.prism.explorer")!
+    let data = defaults.data(forKey: "prism.featureConfiguration.v2") ?? Data()
+    let profile = (try? JSONSerialization.jsonObject(with: data)) as? [String: Any] ?? [:]
+    var proof: [String: Any] = [:]
+    for key in ["onboardingCompleted", "rowHeight", "terminalHistoryEnabled", "terminalNotifyLongCommands", "terminalNotificationIncludeDetails"] {
+        proof[key] = profile[key] ?? NSNull()
+    }
+    emit(proof)
 } else if mode == "verify-signature" {
     let data = try Data(contentsOf: URL(fileURLWithPath: arguments[2]))
     let publicKey = try Curve25519.Signing.PublicKey(rawRepresentation: Data(base64Encoded: arguments[3])!)
@@ -63,7 +81,11 @@ if mode == "capabilities" {
     let app = AXUIElementCreateApplication(pid)
     let windows = attribute(app, kAXWindowsAttribute) as? [AXUIElement] ?? []
 
-    if mode == "inspect" {
+    if mode == "activate" {
+        let activated = NSRunningApplication(processIdentifier: pid)?.activate(options: []) ?? false
+        if let window = windows.first { AXUIElementPerformAction(window, kAXRaiseAction as CFString) }
+        emit(["success": activated])
+    } else if mode == "inspect" {
         // Only control labels are returned. File/editor text values are not exported.
         emit(windows.map { window in
             let buttons = walk(window).filter {
@@ -74,10 +96,14 @@ if mode == "capabilities" {
             let fixtureVisible = walk(window).contains {
                 label($0).contains("Upgrade-proof.txt")
             }
-            let offerVisible = walk(window).contains { label($0).contains("0.9.13") }
+            let expectedVersion = arguments.count > 3 ? arguments[3] : ""
+            let offerVisible = !expectedVersion.isEmpty && walk(window).contains { label($0).contains(expectedVersion) }
+            let zeroItemsVisible = walk(window).contains { label($0) == "0 items" }
+            let oneItemVisible = walk(window).contains { label($0) == "1 item" }
             return [
                 "title": label(window), "buttons": buttons,
-                "fixtureVisible": fixtureVisible, "expectedOfferVisible": offerVisible
+                "fixtureVisible": fixtureVisible, "expectedOfferVisible": offerVisible,
+                "zeroItemsVisible": zeroItemsVisible, "oneItemVisible": oneItemVisible
             ] as [String: Any]
         })
     } else if mode == "capture" {

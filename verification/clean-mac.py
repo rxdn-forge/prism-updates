@@ -16,11 +16,14 @@ import xml.etree.ElementTree as ET
 
 ROOT = Path(__file__).resolve().parent
 FEED = "https://prism.rxdn.dev/updates/appcast.xml"
-FEED_SHA = "c9e12a2c7f92405888a5c0496fc88948b0700a962c2c74839dabfc5a3210cee1"
-OLD_URL = "https://prism.rxdn.dev/updates/Prism-Explorer-0.9.12-27.zip"
-OLD_SHA = "44b1af31731582134d2c57790b59d656f2d65fcabff9da5c5afb8a0ef8c3d7d9"
-TARGET_URL = "https://prism.rxdn.dev/updates/Prism-Explorer-0.9.13-28.zip"
-TARGET_SHA = "0a6f74bf6f1e14a65e2e4628d6d40323dd8248bdf2c6e7779c4f2702469c8c53"
+FEED_SHA = "0bbd4677602bc66efb62df49b65f77755c06de058840ae6651d132af9259c2a1"
+OLD_URL = "https://prism.rxdn.dev/updates/Prism-Explorer-0.9.13-28.zip"
+OLD_SHA = "0a6f74bf6f1e14a65e2e4628d6d40323dd8248bdf2c6e7779c4f2702469c8c53"
+TARGET_URL = "https://prism.rxdn.dev/updates/Prism-Explorer-0.9.14-29.zip"
+TARGET_SHA = "8a13a450d49cb7dd1e8f2d81fa63b881a495dcd0f67cbee59586cec5cd3b8c3b"
+BASELINE_BUILD = "28"
+TARGET_BUILD = "29"
+TARGET_VERSION = "0.9.14"
 
 
 def permitted_host():
@@ -157,7 +160,7 @@ class Verification:
         self.app.parent.mkdir(exist_ok=True)
         checked(["/usr/bin/ditto", "-x", "-k", self.output / "old.zip", self.app.parent])
         before = metadata(self.app)
-        if (before["CFBundleIdentifier"], before["CFBundleVersion"]) != ("dev.prism.explorer", "27"):
+        if (before["CFBundleIdentifier"], before["CFBundleVersion"]) != ("dev.prism.explorer", BASELINE_BUILD):
             raise RuntimeError("Wrong original public package")
         checked(["/usr/bin/codesign", "--verify", "--deep", "--strict", self.app])
         self.verify_public_signatures(before["SUPublicEDKey"])
@@ -177,6 +180,8 @@ class Verification:
         settings = self.output / "synthetic-settings.json"
         settings.write_text(json.dumps({
             "onboardingCompleted": True,
+            "rowHeight": 31,
+            "terminalNotificationIncludeDetails": False,
             "terminalHistoryEnabled": False,
             "terminalLoadShellConfig": False,
             "terminalNotifyLongCommands": False,
@@ -190,6 +195,7 @@ class Verification:
         session = Path.home() / "Library/Application Support/Prism Explorer/Workspace/session-v1.json"
         self.state["sessionPath"] = str(session)
         self.state["normalPersistedPreferences"] = True
+        self.state["beforePreferences"] = self.adapter("preference-proof")
         self.state["phase"] = "normal-launch"
         self.save()
         executable = self.app / "Contents/MacOS" / before["CFBundleExecutable"]
@@ -203,6 +209,11 @@ class Verification:
         self.save()
         return process
 
+    def inspect(self, pid):
+        windows = self.adapter("inspect", pid, TARGET_VERSION)
+        self.state["lastWindows"] = windows
+        return windows
+
     def ui_acceptance(self, process):
         capabilities = self.state["capabilities"]
         required = ("axTrusted", "windowServerAvailable", "screenCapturePermitted")
@@ -212,10 +223,27 @@ class Verification:
             self.save()
             return False
         pid = process.pid
-        before_windows = wait_for(
-            lambda: self.adapter("inspect", pid),
-            lambda windows: any(window["fixtureVisible"] for window in windows),
-        )
+        self.adapter("activate", pid)
+        try:
+            before_windows = wait_for(
+                lambda: self.inspect(pid),
+                lambda windows: any(window["fixtureVisible"] for window in windows),
+                seconds=8,
+            )
+        except RuntimeError:
+            observed = self.inspect(pid)
+            self.state["baselineBeforeRefresh"] = observed
+            self.capture(pid, "baseline-empty", required=False)
+            if not any(window["zeroItemsVisible"] for window in observed):
+                raise RuntimeError("Baseline row absent without explicit 0-item state; no workaround applied")
+            self.state["baselineRefreshApplied"] = self.adapter("menu", pid, "Refresh").get("success", False)
+            self.save()
+            if not self.state["baselineRefreshApplied"]:
+                raise RuntimeError("Normal baseline View Refresh failed")
+            before_windows = wait_for(
+                lambda: self.inspect(pid),
+                lambda windows: any(window["fixtureVisible"] for window in windows),
+            )
         self.state["beforeWindows"] = before_windows
         self.capture(pid, "before")
         self.state["phase"] = "normal-menu"
@@ -225,7 +253,7 @@ class Verification:
             lambda result: result.get("success"),
         )
         offered = wait_for(
-            lambda: self.adapter("inspect", pid),
+            lambda: self.inspect(pid),
             lambda windows: any(
                 window["expectedOfferVisible"]
                 and any(button["title"] == "Install Update" for button in window["buttons"])
@@ -237,7 +265,9 @@ class Verification:
         self.capture(pid, "offer")
         self.state["phase"] = "sparkle-download-install"
         self.save()
-        if not self.adapter("button", pid, "Install Update").get("success"):
+        self.state["installUpdatePressed"] = self.adapter("button", pid, "Install Update").get("success", False)
+        self.save()
+        if not self.state["installUpdatePressed"]:
             raise RuntimeError("Install Update action failed")
         deadline = time.monotonic() + 180
         relaunch_pressed = False
@@ -249,10 +279,10 @@ class Verification:
             except (OSError, ValueError, KeyError):
                 # Atomic replacement may briefly hide old/new metadata.
                 installed_build = None
-            if changed and installed_build == "28":
+            if changed and installed_build == TARGET_BUILD:
                 new_pid = changed[0]["pid"]
                 break
-            windows = self.adapter("inspect", pid)
+            windows = self.inspect(pid)
             self.state["lastWindows"] = windows
             ready_window = next((
                 window for window in windows
@@ -269,23 +299,37 @@ class Verification:
                 self.save()
             time.sleep(0.75)
         else:
-            raise RuntimeError("No same-path build28 relaunch in180seconds; no unknown prompt was accepted")
+            raise RuntimeError("No same-path target relaunch in180seconds; no unknown prompt was accepted")
         self.state["afterPID"] = new_pid
         self.state["afterBuild"] = metadata(self.app)["CFBundleVersion"]
         self.state["afterExecutableSHA256"] = executable_hash(self.app)
         if self.state["afterExecutableSHA256"] != self.state["expectedExecutableSHA256"]:
-            raise RuntimeError("Installed executable differs from pinned public28 archive")
+            raise RuntimeError("Installed executable differs from pinned public target archive")
         checked(["/usr/bin/codesign", "--verify", "--deep", "--strict", self.app])
-        after_windows = wait_for(
-            lambda: self.adapter("inspect", new_pid),
-            lambda windows: any(window["fixtureVisible"] for window in windows),
-        )
+        self.state["phase"] = "target-restoration-without-refresh"
+        self.state["targetRefreshApplied"] = False
+        self.save()
+        try:
+            after_windows = wait_for(
+                lambda: self.inspect(new_pid),
+                lambda windows: any(window["fixtureVisible"] for window in windows),
+            )
+        except RuntimeError:
+            self.capture(new_pid, "after-unpopulated", required=False)
+            raise RuntimeError("Target did not restore a populated fixture; no target Refresh was applied")
         self.state["afterWindows"] = after_windows
         self.capture(new_pid, "after")
+        self.state["afterPreferences"] = self.adapter("preference-proof")
+        self.state["preferencesPreserved"] = self.state["afterPreferences"] == self.state["beforePreferences"]
+        self.state["targetRefreshApplied"] = False
+        if not self.state["preferencesPreserved"]:
+            raise RuntimeError("Normal persisted synthetic preferences changed")
         self.state["fixtureFileUnchanged"] = digest(self.proof) == self.proof_hash
         self.state["fixtureVisibleAfter"] = True
         if not self.state["fixtureFileUnchanged"]:
             raise RuntimeError("Synthetic fixture content changed")
+        if not self.state.get("relaunchApprovalPressed"):
+            raise RuntimeError("Stock Install and Relaunch approval was not observed")
         self.state["phase"] = "complete"
         self.state["accepted"] = True
         self.save()
