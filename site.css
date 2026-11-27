@@ -88,6 +88,11 @@ video:focus-visible {
   gap: 28px;
   font-size: 14px;
 }
+.mast nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
 .mast nav a:hover,
 .footer-links a:hover,
 .quiet:hover {
