@@ -1,0 +1,29 @@
+name: Manual clean Mac public update acceptance
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: clean-mac-public-update
+  cancel-in-progress: false
+jobs:
+  original-product-update:
+    runs-on: macos-15
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Original build 27 menu to signed public build 28
+        run: python3 verification/clean-mac.py
+      - name: Keep bounded public fixture evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: clean-mac-public-update-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/prism-clean-mac-proof/receipt.json
+            ${{ runner.temp }}/prism-clean-mac-proof/*.png
+            ${{ runner.temp }}/prism-clean-mac-proof/appcast.xml
+          retention-days: 3
+          if-no-files-found: warn
