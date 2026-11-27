@@ -1,36 +1,169 @@
 <!doctype html>
 <html lang="en">
-<head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Prism · Mothline arrives</title>
-<style>
-:root{color-scheme:dark;--bg:#111215;--panel:#191a20;--edge:#30313a;--ink:#f0edf5;--muted:#a5a4b2;--accent:#b9a4ee;--glow:rgba(185,164,238,.12)}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}button,a{-webkit-tap-highlight-color:transparent}a{color:inherit}a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:5px}main{max-width:1140px;margin:auto;padding:28px 36px 60px}nav{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--edge);padding-bottom:22px}.wordmark{display:flex;gap:10px;align-items:center;font-size:19px;font-weight:650;letter-spacing:-.6px}.wordmark img{width:35px;height:35px;object-fit:contain}.version{font:12px ui-monospace,SFMono-Regular,monospace;color:var(--muted);letter-spacing:.5px}.hero{display:grid;grid-template-columns:1.5fr 1fr;align-items:center;gap:32px;padding:60px 0 42px}.eyebrow{font-size:12px;letter-spacing:2.3px;text-transform:uppercase;color:var(--accent);font-weight:650}h1{font-size:clamp(40px,6vw,70px);line-height:1.04;letter-spacing:-3px;font-weight:620;margin:17px 0 22px}h1 em{font-style:normal;color:var(--accent)}.intro{font-size:18px;max-width:530px;color:var(--muted)}.hero-icon{position:relative;min-height:270px;display:grid;place-items:center;background:radial-gradient(ellipse,var(--glow),transparent 67%);border:1px solid var(--edge);border-radius:28px}.hero-icon:after{content:"";position:absolute;inset:18px;border:1px solid var(--edge);border-radius:18px;pointer-events:none}.hero-icon img{width:215px;height:215px;object-fit:contain;filter:drop-shadow(0 14px 32px #0008);transition:opacity .18s,transform .24s}.hero-icon img.changing{opacity:.3;transform:scale(.96)}.actions{display:flex;gap:13px;align-items:center;flex-wrap:wrap;margin-top:28px}.button{display:inline-flex;align-items:center;gap:10px;padding:12px 19px;background:var(--accent);color:#17131f;border:1px solid transparent;border-radius:10px;font-weight:650;text-decoration:none}.secondary{background:transparent;color:var(--ink);border-color:var(--edge)}.note{color:var(--muted);font-size:12px;margin-top:13px}.status{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:0 0 46px}.status div{padding:17px 20px;border:1px solid var(--edge);border-radius:12px;background:var(--panel)}.status strong{display:block;font:600 24px/1.25 ui-monospace,SFMono-Regular,monospace;letter-spacing:-1px}.status span{font-size:12px;color:var(--muted)}.section-label{display:flex;justify-content:space-between;gap:20px;align-items:baseline;margin:0 0 16px}.section-label h2{font-size:24px;letter-spacing:-.8px;font-weight:600;margin:0}.section-label span{color:var(--muted);font-size:13px}.identities{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:44px}.identity{position:relative;border:1px solid var(--edge);border-radius:18px;background:var(--panel);color:inherit;text-align:left;padding:22px;cursor:pointer;transition:border-color .18s,background .18s,transform .18s}.identity:hover{transform:translateY(-3px);border-color:#767180}.identity[aria-pressed=true]{border-color:var(--accent);background:linear-gradient(160deg,var(--glow),var(--panel) 65%)}.identity img{display:block;width:102px;height:102px;object-fit:contain;margin:0 auto 15px}.identity strong{display:block;font-size:17px}.identity small{display:block;color:var(--muted);margin:6px 0 0;line-height:1.5}.badge{position:absolute;top:14px;right:14px;font-size:10px;text-transform:uppercase;letter-spacing:.8px;color:var(--accent)}.changes{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}.change{padding:23px;border:1px solid var(--edge);border-radius:14px;background:var(--panel)}.change b{display:block;margin:0 0 7px;font-size:16px}.change p{color:var(--muted);margin:0;font-size:14px}.change .number{font:11px ui-monospace,SFMono-Regular,monospace;letter-spacing:1px;color:var(--accent);margin-bottom:12px}.local-only{margin-top:36px;padding:25px;border:1px solid var(--edge);border-radius:15px;background:#15161b}.local-only h2{margin:0 0 12px;font-size:20px}.local-only p{color:var(--muted);font-size:14px;margin:8px 0}.local-only strong{color:var(--ink)}footer{border-top:1px solid var(--edge);margin-top:42px;padding-top:20px;color:var(--muted);display:flex;justify-content:space-between;gap:20px;font-size:12px}.pill{padding:4px 8px;border:1px solid var(--edge);border-radius:6px;font:11px ui-monospace,SFMono-Regular,monospace;color:var(--muted)}
-@media(max-width:740px){main{padding:22px 20px 40px}.hero{grid-template-columns:1fr;padding:35px 0 28px;gap:22px}.hero-icon{min-height:210px;grid-row:1}.hero-icon img{height:165px;width:165px}h1{letter-spacing:-2px}.identities{gap:9px}.identity{padding:15px 11px}.identity img{width:75px;height:75px}.identity small{font-size:11px}.badge{position:static;font-size:9px;display:block;height:14px;margin-bottom:6px}.status{gap:8px;margin-bottom:30px}.status div{padding:14px 11px}.status strong{font-size:21px}.changes{grid-template-columns:1fr}.section-label{display:block}.section-label span{display:block;margin-top:5px}footer{display:block}.version{font-size:10px}}@media(prefers-reduced-motion:reduce){*,*:before,*:after{transition:none!important;scroll-behavior:auto!important}}
-</style>
-</head>
-<body><main>
-<nav><a class="wordmark" href="/" style="text-decoration:none"><img src="mothline.png" alt="">prism</a><span class="version">MACOS · 0.9.10 / BUILD 25</span></nav>
-<section class="hero"><div><div class="eyebrow">A new identity. A steadier workspace.</div><h1>A little more<br><em id="identity-word">Mothline.</em></h1><p class="intro">Your files, terminals and ideas, with room to breathe. Mothline leads our next chapter. All three identities come with Prism.</p><div class="actions"><a class="button" href="https://prism.rxdn.dev/updates/Prism-Explorer-0.9.10-25.zip">Download for Apple Silicon <span aria-hidden="true">↗</span></a><a class="button secondary" href="#changes">What changed</a></div><div class="note">Already using Prism? Choose Check for Updates, then restart when your terminal work is ready.</div></div><div class="hero-icon"><img id="hero-image" src="mothline.png" alt="Mothline identity: a silver violet moth"></div></section>
-<div class="status" aria-label="Release checks"><div><strong>500 / 500</strong><span>Automated checks passed</span></div><div><strong>5 / 5</strong><span>Native repair checks passed</span></div><div><strong>3 identities</strong><span>Included in Appearance</span></div></div>
-<div class="section-label"><h2>One workspace. Three signatures.</h2><span>Select a look to preview it here.</span></div>
-<section class="identities" aria-label="Identity previews">
-<button class="identity" data-id="mothline" data-color="#b9a4ee" aria-pressed="true"><span class="badge">New default</span><img src="mothline.png" alt="Violet moth icon"><strong>Mothline</strong><small>A quiet companion. Soft violet, silver wings, a little curiosity.</small></button>
-<button class="identity" data-id="foldfield" data-color="#bdd0d7" aria-pressed="false"><span class="badge">Included</span><img src="foldfield.png" alt="Folded silver geometric icon"><strong>Foldfield</strong><small>A sculpted fold. Precise lines and a cool, architectural feel.</small></button>
-<button class="identity" data-id="amberpane" data-color="#e2ae72" aria-pressed="false"><span class="badge">Included</span><img src="amberpane.png" alt="Amber split-panel icon"><strong>Amberpane</strong><small>A warmer frame. Copper edges, clear panels, steady light.</small></button>
-</section>
-<div class="section-label" id="changes"><h2>Made sturdier where you work.</h2><span>0.9.10 · 26 November 2026</span></div>
-<section class="changes">
-<article class="change"><div class="number">01 / STABILITY</div><b>Column view keeps its footing.</b><p>Fixed an image lifetime error during native column-cell copying that caused the reported crash.</p></article>
-<article class="change"><div class="number">02 / EDITING</div><b>Undo belongs to its editor.</b><p>Closing an editor clears its text Undo actions. File-operation history stays with the workspace.</p></article>
-<article class="change"><div class="number">03 / PANES</div><b>A divider you can catch.</b><p>The split divider has a wider pointer target and a resize cursor while keeping its compact visual spacing.</p></article>
-<article class="change"><div class="number">04 / CREATION</div><b>New Folder lands where you are.</b><p>Creation uses the focused pane's displayed directory. A context-menu action uses the pane you clicked.</p></article>
-<article class="change"><div class="number">05 / KEYBOARD</div><b>Tab through the New Tab chooser.</b><p>Tab and Shift-Tab move through its choices, with arrow navigation, Return to open and Escape to dismiss.</p></article>
-<article class="change"><div class="number">06 / IDENTITY</div><b>Your appearance stays yours.</b><p>Mothline is the default for new profiles. Existing explicit appearance choices remain available, alongside all three new identities.</p></article>
-</section>
-
-<footer><span>Prism Explorer · macOS 14+ · Apple Silicon</span><span>Publisher-signed updates · Preview app, not yet notarized</span></footer>
-</main><script>
-const root=document.documentElement, hero=document.getElementById('hero-image'),word=document.getElementById('identity-word');
-document.querySelectorAll('.identity').forEach(button=>button.addEventListener('click',()=>{document.querySelectorAll('.identity').forEach(other=>other.setAttribute('aria-pressed',String(other===button)));root.style.setProperty('--accent',button.dataset.color);root.style.setProperty('--glow',button.dataset.color+'1f');hero.src=button.dataset.id+'.png';hero.alt=button.querySelector('img').alt;word.textContent=button.querySelector('strong').textContent+'.';}));
-</script></body></html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Prism Explorer for Mac</title>
+    <meta
+      name="description"
+      content="Compare folders, edit a file and open a terminal in the same native Mac workspace."
+    />
+    <meta property="og:title" content="Prism Explorer for Mac" />
+    <meta property="og:description" content="Files, terminal and editor share a workspace." />
+    <meta property="og:image" content="https://prism.rxdn.dev/media/prism-card.jpg" />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" content="#23202c" />
+    <link rel="canonical" href="https://prism.rxdn.dev/" />
+    <link rel="icon" href="media/mothline.webp" />
+    <link rel="stylesheet" href="site.css" />
+    <link rel="preload" href="fonts/bricolage-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <script src="tour.js" defer></script>
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <header class="mast">
+      <div class="shell">
+        <a class="brand" href="./"
+          ><img src="media/mothline.webp" width="40" height="40" alt="" />Prism Explorer</a
+        >
+        <nav aria-label="Main">
+          <a href="#tour">Tour</a><a href="#download">Get Prism</a><a href="#press">Press</a>
+        </nav>
+      </div>
+    </header>
+    <main id="main">
+      <section class="hero">
+        <div class="shell hero-grid">
+          <div class="hero-copy">
+            <h1>Keep the folder<br />in view.</h1>
+            <p>
+              A native Mac file browser for people who work between folders, an editor and a terminal. Give each
+              its own tab, then put the two you need side by side.
+            </p>
+            <div class="actions">
+              <a class="primary" href="#download">Get Prism for Mac <span aria-hidden="true">↓</span></a
+              ><a class="quiet" href="#tour">Explore the workspace</a>
+            </div>
+          </div>
+          <figure class="hero-art">
+            <img
+              src="media/mothline.webp"
+              width="416"
+              height="416"
+              alt="Mothline, a folded violet moth with a point of light at its center"
+            />
+          </figure>
+        </div>
+      </section>
+      <section class="workspace shell" id="tour" aria-labelledby="tour-title">
+        <div class="tour-head">
+          <h2 id="tour-title">Inside the workspace</h2>
+          <div class="tabs" aria-label="Choose a workspace view">
+            <a href="media/browse.jpg" data-scene="browse" aria-current="true">Files</a
+            ><a href="media/terminal.jpg" data-scene="terminal">Terminal</a>
+            <a href="media/editor.jpg" data-scene="editor">Editor</a
+            ><a href="media/space.jpg" data-scene="space">Space</a>
+          </div>
+        </div>
+        <figure class="workspace-shot">
+          <div class="detail-note"><span id="detail-title">Files, closer</span><span>Native Mac detail · tap for full view</span></div>
+          <a id="shot-link" href="media/browse.jpg" aria-label="Open full-size Files screenshot"
+            ><picture>
+              <source id="shot-detail" media="(max-width: 600px)" srcset="media/browse-detail.jpg" width="542" height="816" />
+              <img
+              id="shot"
+              src="media/browse.jpg"
+              width="1600"
+              height="925"
+              alt="Two native Prism panes show the Dovetail project and its Editions folder."
+          /></picture></a>
+          <figcaption aria-live="polite">
+            <span id="caption"
+              >Compare the project and its print editions in two independently navigable panes.</span
+            ><a id="full" href="media/browse.jpg">Full size <span aria-hidden="true">↗</span></a>
+          </figcaption>
+        </figure>
+      </section>
+      <section class="story shell" aria-labelledby="film-title">
+        <div>
+          <h2 id="film-title">From folder<br />to finishing touch.</h2>
+          <p>
+            Open a project, check the terminal, edit its source, and see what takes up space. This short tour
+            visits all four views in the same sample print studio.
+          </p>
+        </div>
+        <video
+          controls
+          playsinline
+          preload="none"
+          aria-label="Prism Explorer workspace tour"
+          poster="media/film-poster.jpg"
+          width="1280"
+          height="720"
+        >
+          <source src="media/prism-tour.mp4" type="video/mp4" />
+          <track kind="captions" src="media/tour.vtt" srclang="en" label="English" default />
+        </video>
+      </section>
+      <section class="identity">
+        <div class="shell identity-row">
+          <div>
+            <h2>Pick your Prism.</h2>
+            <p>
+              Mothline greets new profiles. Choose a different Dock icon in Settings, under Colors, Fonts and
+              Icons.
+            </p>
+          </div>
+          <div class="marks">
+            <figure>
+              <img src="media/mothline.webp" alt="" width="96" height="96" loading="lazy" />
+              <figcaption>Mothline</figcaption>
+            </figure>
+            <figure>
+              <img src="media/foldfield.webp" alt="" width="96" height="96" loading="lazy" />
+              <figcaption>Foldfield</figcaption>
+            </figure>
+            <figure>
+              <img src="media/amberpane.webp" alt="" width="96" height="96" loading="lazy" />
+              <figcaption>Amberpane</figcaption>
+            </figure>
+          </div>
+        </div>
+      </section>
+      <section class="download shell" id="download">
+        <div>
+          <h2>Get Prism for Mac</h2>
+          <p>Preview 0.9.12, build 27. For Apple silicon running macOS 14 or later.</p>
+          <p class="note">
+            The preview carries Prism’s update signature. Apple Developer ID signing and notarization are pending.
+            macOS may block a first launch.
+          </p>
+        </div>
+        <div class="cta-stack">
+          <a class="primary" href="updates/Prism-Explorer-0.9.12-27.zip" download
+            >Download the preview <span aria-hidden="true">↓</span></a
+          >
+          <a href="updates/release-0.9.12.html">What’s new in 0.9.12</a>
+        </div>
+        <p class="already">
+          Already using Prism? Open <strong>Prism Explorer › Check for Updates…</strong> to see what changed and
+          update in place.
+        </p>
+      </section>
+    </main>
+    <footer id="press">
+      <div class="shell">
+        <div>
+          <strong>Press and support</strong>
+          <p>App icons, screenshots, the silent tour and product descriptions.</p>
+        </div>
+        <div class="footer-links">
+          <a href="media/Prism-press-kit.zip" download>Download the press kit</a
+          ><a href="https://github.com/rxdn-forge/prism-updates/issues">Report an issue</a
+          ><a href="data.html">Data and permissions</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

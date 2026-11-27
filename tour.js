@@ -20,6 +20,12 @@ const scenes = {
     "See how much room the artwork and editions occupy in this folder.",
   ],
 };
+const detailSizes = {
+  browse: [542, 816],
+  terminal: [660, 476],
+  editor: [688, 840],
+  space: [562, 872],
+};
 const controls = document.querySelector(".tabs");
 const links = [...controls.querySelectorAll("a")];
 let choice = 0;
@@ -28,12 +34,18 @@ function selectScene(link) {
   const ticket = ++generation;
   const key = link.dataset.scene;
   const [title, description, caption] = scenes[key];
+  const detailURL = new URL(key + "-detail.jpg", link.href).href;
   const next = new Image();
   next.onload = () => {
     if (generation !== ticket) return;
     const shot = document.getElementById("shot");
+    const detail = document.getElementById("shot-detail");
+    detail.srcset = detailURL;
+    detail.setAttribute("width", detailSizes[key][0]);
+    detail.setAttribute("height", detailSizes[key][1]);
     shot.src = link.href;
     shot.alt = description;
+    document.getElementById("detail-title").textContent = title + ", closer";
     document.getElementById("shot-link").href = link.href;
     document.getElementById("shot-link").setAttribute("aria-label", "Open full-size " + title + " screenshot");
     document.getElementById("full").href = link.href;
@@ -47,7 +59,7 @@ function selectScene(link) {
     if (generation === ticket)
       document.getElementById("caption").textContent = "This image could not load. Select the view to try again.";
   };
-  next.src = link.href;
+  next.src = window.matchMedia("(max-width: 600px)").matches ? detailURL : link.href;
 }
 links.forEach((link, index) => {
   link.addEventListener("click", (event) => {
