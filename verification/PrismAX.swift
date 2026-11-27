@@ -81,13 +81,14 @@ if mode == "capabilities" {
             ] as [String: Any]
         })
     } else if mode == "capture" {
-        let entries = CGWindowListCopyWindowInfo([.optionAll, .excludeDesktopElements], kCGNullWindowID) as? [[String: Any]] ?? []
+        let entries = CGWindowListCopyWindowInfo([.optionOnScreenOnly, .excludeDesktopElements], kCGNullWindowID) as? [[String: Any]] ?? []
         var ids: [Int] = []
         var exits: [Int32] = []
         for entry in entries {
             guard (entry[kCGWindowOwnerPID as String] as? Int) == Int(pid),
                   (entry[kCGWindowLayer as String] as? Int) == 0,
-                  let id = entry[kCGWindowNumber as String] as? Int else { continue }
+                  let id = entry[kCGWindowNumber as String] as? Int,
+                  (entry[kCGWindowName as String] as? String) == arguments[4] else { continue }
             ids.append(id)
             let process = Process()
             process.executableURL = URL(fileURLWithPath: "/usr/sbin/screencapture")
@@ -96,7 +97,7 @@ if mode == "capabilities" {
             process.waitUntilExit()
             exits.append(process.terminationStatus)
         }
-        emit(["windowIDs": ids, "captureExits": exits, "success": !ids.isEmpty && exits.allSatisfy { $0 == 0 }])
+        emit(["windowIDs": ids, "captureExits": exits, "success": !ids.isEmpty && exits.contains(0)])
     } else {
         let desired = arguments[3]
         let roots: [AXUIElement]

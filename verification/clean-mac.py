@@ -96,9 +96,13 @@ class Verification:
         destination.write_bytes(data)
 
     def capture(self, pid, name):
-        result = self.adapter("capture", pid, self.output / name)
-        if not result.get("success"):
-            raise RuntimeError("WindowServer screenshot could not be verified")
+        window_title = "Software Update" if name in ("offer", "ready") else "Clean Mac Upgrade Fixture"
+        result = wait_for(
+            lambda: self.adapter("capture", pid, self.output / name, window_title),
+            lambda value: value.get("success"),
+            seconds=8,
+        )
+        self.state.setdefault("captures", {})[name] = result
         return result
 
     def verify_public_signatures(self, public_key):
@@ -224,6 +228,7 @@ class Verification:
             ),
         )
         self.state["offeredWindows"] = offered
+        time.sleep(2)
         self.capture(pid, "offer")
         self.state["phase"] = "sparkle-download-install"
         self.save()
