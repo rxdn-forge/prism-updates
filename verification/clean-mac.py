@@ -95,15 +95,19 @@ class Verification:
             raise RuntimeError("Public bytes differ from reviewed immutable digest")
         destination.write_bytes(data)
 
-    def capture(self, pid, name, window_title=None):
+    def capture(self, pid, name, window_title=None, required=True):
         if window_title is None:
             window_title = "Software Update" if name == "offer" else "Clean Mac Upgrade Fixture"
-        result = wait_for(
-            lambda: self.adapter("capture", pid, self.output / name, window_title),
-            lambda value: value.get("success"),
-            seconds=8,
-        )
+        deadline = time.monotonic() + (8 if required else 2)
+        result = {"success": False, "windowTitle": window_title}
+        while time.monotonic() < deadline:
+            result = self.adapter("capture", pid, self.output / name, window_title)
+            if result.get("success"):
+                break
+            time.sleep(0.3)
         self.state.setdefault("captures", {})[name] = result
+        if required and not result.get("success"):
+            raise RuntimeError("Required stable WindowServer screenshot was unavailable")
         return result
 
     def verify_public_signatures(self, public_key):
@@ -240,7 +244,12 @@ class Verification:
         while time.monotonic() < deadline:
             applications = self.adapter("apps")
             changed = [app for app in applications if app["path"] == str(self.app) and app["pid"] != pid]
-            if changed and metadata(self.app)["CFBundleVersion"] == "28":
+            try:
+                installed_build = metadata(self.app)["CFBundleVersion"]
+            except (OSError, ValueError, KeyError):
+                # Atomic replacement may briefly hide old/new metadata.
+                installed_build = None
+            if changed and installed_build == "28":
                 new_pid = changed[0]["pid"]
                 break
             windows = self.adapter("inspect", pid)
@@ -254,7 +263,7 @@ class Verification:
             ), None)
             if not relaunch_pressed and ready_window:
                 self.save()
-                self.capture(pid, "ready", ready_window["title"])
+                self.capture(pid, "ready", ready_window["title"], required=False)
                 relaunch_pressed = self.adapter("button", pid, "Install and Relaunch").get("success", False)
                 self.state["relaunchApprovalPressed"] = relaunch_pressed
                 self.save()
